@@ -147,6 +147,7 @@
 		]
 	},
 	"devDependencies": {
-		"generate-asset-webpack-plugin": "^0.3.0"
+		"generate-asset-webpack-plugin": "^0.3.0",
+		"jquery": "^3.5.1"
 	}
 }

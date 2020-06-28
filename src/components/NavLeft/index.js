@@ -3,6 +3,7 @@ import { Menu, Button} from 'antd';
 //import Super from "./../../super"
 import { NavLink,withRouter } from 'react-router-dom'
 import './index.css'
+import RytjPanel from '../../components/RytjPanel'
 import Units from '../../units'
 const SubMenu = Menu.SubMenu;
 
@@ -44,6 +45,7 @@ class NavLeft extends React.Component{
         this.props.onRef(this)
     }
 	setMenuTreeNode=(list)=>{
+		//console.log("list==="+JSON.stringify(list))
 		const menuId = this.getCurrentMenuId();
 		const open={}
 		list.l1Menus.forEach((item)=>{
@@ -120,7 +122,8 @@ class NavLeft extends React.Component{
 					>
 					{menuTreeNode}
 				</Menu>
-				
+				<RytjPanel/>
+
 			</div>
 		)
 	}

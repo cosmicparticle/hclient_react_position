@@ -1687,7 +1687,7 @@ getSelectList=()=>{
                 {/* <span id="tip" className="tip">请尝试使用鼠标点击地图上模型，渲染选中模型颜色</span> */}
                
                 <div  id="fmbtnsGroup" className="fmbtnsGroup">
-                    {this.initFormList()}              
+                    {this.initFormList()}
                 <br/>
 
 

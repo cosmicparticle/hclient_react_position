@@ -42,6 +42,7 @@ export default class Admin extends React.Component{
         }
 	}
 	setCurrentList=(list)=>{
+		console.log("MenuTreeNode==="+JSON.stringify(list))
 		this.navLeft.setMenuTreeNode(list)
 	}
 	onRef=(ref)=>{

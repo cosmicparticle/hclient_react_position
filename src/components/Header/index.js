@@ -29,6 +29,7 @@ class Header extends React.Component{
 		Super.super({
 			url:'api2/meta/menu/get_blocks',                   
 		}).then((res)=>{
+			console.log("blocks1==="+JSON.stringify(res.blocks))
 			const currentBlockId=usedBlockId?usedBlockId:res.currentBlockId //判断url里有blockid
 			res.blocks.forEach((item)=>{
 				if(item.id===currentBlockId){
