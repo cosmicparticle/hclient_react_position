@@ -36,13 +36,24 @@ export default class RytjPanel extends React.Component{
         $("#main_div").css("height",rpdh);
     }
     openRytjPanelDiv=(flag)=>{
-        
+        if(flag){
+            $("#rytjPanel_div").css("width","375px");
+            $("#main_div").css("display","block");
+            $("#openBut_img").css("display","none");
+            $("#closeBut_img").css("display","block");
+        }
+        else{
+            $("#rytjPanel_div").css("width","0px");
+            $("#main_div").css("display","none");
+            $("#openBut_img").css("display","block");
+            $("#closeBut_img").css("display","none");
+        }
     }
     render() {
         return <div className="rytjPanel_div" id="rytjPanel_div">
-            <img className="openBut_img" id="openBut_img" src={openButImg}/>
+            <img className="openBut_img" id="openBut_img" src={openButImg} onClick={(e)=>this.openRytjPanelDiv(true)}/>
             <div className="main_div" id="main_div"></div>
-            <img className="closeBut_img" id="closeBut_img" src={closeButImg}/>
+            <img className="closeBut_img" id="closeBut_img" src={closeButImg} onClick={(e)=>this.openRytjPanelDiv(false)}/>
         </div>;
     }
 }
