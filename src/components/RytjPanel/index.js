@@ -4,6 +4,7 @@ import openButImg from '../../image/001.png';
 import closeButImg from '../../image/002.png';
 import Super from "../../super";
 import $ from 'jquery';
+import RytjEcharts from 'echarts-for-react';
 
 export default class RytjPanel extends React.Component{
     state={menuId:17,qytjQueryKey:"",qytjStartDate:"",qytjEndDate:"",qytjEntities:[],
@@ -93,6 +94,43 @@ export default class RytjPanel extends React.Component{
         else
             return ""
     }
+    getOptions(){
+        let option = {
+            angleAxis: {
+            },
+            radiusAxis: {
+                type: 'category',
+                data: ['周一', '周二', '周三', '周四'],
+                z: 10
+            },
+            polar: {
+            },
+            series: [{
+                type: 'bar',
+                data: [1, 2, 3, 4],
+                coordinateSystem: 'polar',
+                name: 'A',
+                stack: 'a'
+            }, {
+                type: 'bar',
+                data: [2, 4, 6, 8],
+                coordinateSystem: 'polar',
+                name: 'B',
+                stack: 'a'
+            }, {
+                type: 'bar',
+                data: [1, 2, 3, 4],
+                coordinateSystem: 'polar',
+                name: 'C',
+                stack: 'a'
+            }],
+            legend: {
+                show: true,
+                data: ['A', 'B', 'C']
+            }
+        };
+        return option;
+    }
     resetRytjPosition=()=>{
         let nlh=$(".nav-left").css("height");
         nlh=nlh.substring(0,nlh.length-2);
@@ -139,6 +177,8 @@ export default class RytjPanel extends React.Component{
         return <div className="rytjPanel_div" id="rytjPanel_div">
             <img className="openBut_img" id="openBut_img" src={openButImg} onClick={(e)=>this.openRytjPanelDiv(true)}/>
             <div className="main_div" id="main_div">
+                <div className="rytj_title_div">人员统计</div>
+                <RytjEcharts option={this.getOptions()}/>
                 <div className="qytj_title_div">区域统计</div>
                 <div className="qytj_list_div">
                     <div className="title_div">
