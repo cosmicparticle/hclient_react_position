@@ -138,12 +138,12 @@ export default class RytjPanel extends React.Component{
         })
     }
     initBjjcListByMenuId=()=>{
-        //this.state.bjjcStartDate=this.getAddDate(-140);
-        //this.state.bjjcEndDate=this.getTodayDate();
+        this.state.bjjcStartDate=this.getAddDate(-140);
+        this.state.bjjcEndDate=this.getTodayDate();
         Super.super({
             url:`api2/entity/${this.state.bjjcMenuId}/list/tmpl`,
-            method:'GET'
-            //query:{criteria_13:this.state.bjjcStartDate+"~"+this.state.bjjcEndDate}
+            method:'GET',
+            query:{criteria_13:this.state.bjjcStartDate+"~"+this.state.bjjcEndDate}
         }).then((res) => {
             //console.log(res);
             console.log("bjjcTmpl==="+JSON.stringify(res));
@@ -210,7 +210,7 @@ export default class RytjPanel extends React.Component{
             method:'GET',
             query:{pageSize:this.state.pageSize}
         }).then((res) => {
-            console.log("data==="+JSON.stringify(res));
+            console.log("bjjcData==="+JSON.stringify(res));
             let bjjcEntities=res.entities;
             let bjjcSeriesData=this.state.bjjcSeriesData;
             bjjcEntities.map((enItem,enIndex)=>{
