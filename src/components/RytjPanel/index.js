@@ -14,8 +14,10 @@ export default class RytjPanel extends React.Component{
         bjjcMenuId:24,bjjcQueryKey:"",bjjcStartDate:"",bjjcEndDate:"",
         bjjcColumnsId:{},
         bjjcColumnsFieldId:{},
+        bjjcDataList:[],
         bjjcLegendData:[],
         bjjcSeriesData:[],
+        bjjcInfo:"",
         qytjMenuId:17,qytjQueryKey:"",qytjStartDate:"",qytjEndDate:"",qytjEntities:[],
         qytjColumnsId:{},
         qytjColumnsFieldId:{},
@@ -79,13 +81,13 @@ export default class RytjPanel extends React.Component{
         }).then((res) => {
             console.log("BjjcLegendData==="+JSON.stringify(res))
             let bjjcLegendData=[];
-            let bjjcSeriesData=[];
+            let bjjcDataList=[];
             res.optionsMap[fieldId].map((item,index)=>{
                 bjjcLegendData.push(item.title);
-                bjjcSeriesData.push({"value":0,"name":item.title});
+                bjjcDataList.push({value:0,name:item.title});
             });
             this.state.bjjcLegendData=bjjcLegendData;
-            this.state.bjjcSeriesData=bjjcSeriesData;
+            this.state.bjjcDataList=bjjcDataList;
 
             this.initBjjcListByMenuId();
         });
@@ -211,18 +213,28 @@ export default class RytjPanel extends React.Component{
             query:{pageSize:this.state.pageSize}
         }).then((res) => {
             console.log("bjjcData==="+JSON.stringify(res));
+            let ycbjCount=0;
             let bjjcEntities=res.entities;
-            let bjjcSeriesData=this.state.bjjcSeriesData;
+            let bjjcDataList=this.state.bjjcDataList;
             bjjcEntities.map((enItem,enIndex)=>{
                 let cellMap=enItem.cellMap;
-                bjjcSeriesData.map((sdItem,sdIndex)=>{
+                bjjcDataList.map((sdItem,sdIndex)=>{
                     if(cellMap[this.state.bjjcColumnsId[this.state.报警类型字段]]==sdItem.name){
-                        sdItem.value+=parseInt(cellMap[this.state.bjjcColumnsId[this.state.数量字段]]);
+                        let 数量=parseInt(cellMap[this.state.bjjcColumnsId[this.state.数量字段]]);
+                        sdItem.value+=数量;
+                        ycbjCount+=数量;
                     }
                 })
             })
-            this.state.bjjcSeriesData=bjjcSeriesData;
-            //this.setState({bjjcSeriesData:bjjcSeriesData})
+
+            if(ycbjCount==0){
+                this.state.bjjcInfo="正常";
+            }
+            else{
+                this.state.bjjcInfo="异常报警:"+ycbjCount;
+            }
+            //this.state.bjjcSeriesData=bjjcDataList;
+            this.setState({bjjcSeriesData:bjjcDataList});
             console.log("bjjcSeriesData==="+JSON.stringify(this.state.bjjcSeriesData))
         })
     }
@@ -322,10 +334,10 @@ export default class RytjPanel extends React.Component{
                 left:"center",
                 top:"center",
                 style:{
-                    text:"异常报警:6",
+                    text:this.state.bjjcInfo,
                     textAlign:"center",
                     fill:"#fff",
-                    fontSize:20
+                    fontSize:15
                 }
             },
             series: [
