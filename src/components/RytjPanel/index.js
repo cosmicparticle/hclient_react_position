@@ -7,7 +7,7 @@ import $ from 'jquery';
 import RytjEcharts from 'echarts-for-react';
 
 export default class RytjPanel extends React.Component{
-    state={rytjMenuId:101421313564705,
+    state={rytjMenuId:101421313564705,rytjQueryKey:"",
         rytjColumnsId:{},
         rytjColumnsFieldId:{},
         qytjMenuId:17,qytjQueryKey:"",qytjStartDate:"",qytjEndDate:"",qytjEntities:[],
@@ -16,7 +16,12 @@ export default class RytjPanel extends React.Component{
         报警围栏字段:"报警围栏",
         报警类型字段:"报警类型",
         日期字段:"日期",
-        数量字段:"数量"}
+        数量字段:"数量",
+        人员分类字段:"人员分类",
+        实时人数字段:"实时人数",
+        ssrsCount:0,
+        rytjRaData:[],
+        rytjSeriesData:[]}
 
     componentDidMount(){
         setTimeout(this.resetRytjPosition,"2000");
@@ -34,6 +39,7 @@ export default class RytjPanel extends React.Component{
             console.log("rytjRes==="+JSON.stringify(res))
             let resColumns=res.ltmpl.columns;
             this.initRytjColumnsId(resColumns);
+            this.initRytjListByMenuId();
         });
     }
     initQytjLtmplAttr=()=>{
@@ -71,6 +77,17 @@ export default class RytjPanel extends React.Component{
         this.setState({qytjColumnsId: qytjColumnsId});
         this.setState({qytjColumnsFieldId: qytjColumnsFieldId});
     }
+    initRytjListByMenuId=()=>{
+        Super.super({
+            url:`api2/entity/${this.state.rytjMenuId}/list/tmpl`,
+            method:'GET',
+        }).then((res) => {
+            //console.log(res);
+            console.log("rytjTmpl==="+JSON.stringify(res));
+            this.state.rytjQueryKey=res.queryKey;
+            this.initRytjListByQueryKey();
+        })
+    }
     initQytjListByMenuId=()=>{
         let disabledColIds="";
         let days=-7;
@@ -85,6 +102,43 @@ export default class RytjPanel extends React.Component{
             console.log("tmpl==="+JSON.stringify(res));
             this.state.qytjQueryKey=res.queryKey;
             this.initQytjListByQueryKey();
+        })
+    }
+    initRytjListByQueryKey=()=>{
+        Super.super({
+            url:`api2/entity/list/${this.state.rytjQueryKey}/data`,
+            method:'GET',
+            query:{pageSize:this.state.pageSize}
+        }).then((res) => {
+            console.log("rytjData==="+JSON.stringify(res));
+            let ssrsCount=0;
+            let rytjRaData=[];
+            let rytjSeriesData=[];
+            res.entities.map((item,index)=>{
+                let cellMap=item.cellMap;
+                let 人员分类=cellMap[this.state.rytjColumnsId[this.state.人员分类字段]];
+                let 数量=cellMap[this.state.rytjColumnsId[this.state.数量字段]];
+                rytjRaData.push(人员分类+":"+数量);
+
+                let color;
+                switch (index) {
+                    case 0:
+                        color='#49B637';
+                        break;
+                    case 1:
+                        color='#06AAE4';
+                        break;
+                    case 2:
+                        color='#027BDB';
+                        break;
+                }
+                rytjSeriesData.push({value:数量,itemStyle:{ normal:{color:color}}});
+
+                ssrsCount+=parseInt(数量);
+            });
+            this.state.ssrsCount=ssrsCount;
+            this.state.rytjRaData=rytjRaData;
+            this.state.rytjSeriesData=rytjSeriesData;
         })
     }
     initQytjListByQueryKey=()=>{
@@ -126,7 +180,9 @@ export default class RytjPanel extends React.Component{
             },
             radiusAxis: {
                 type: 'category',
-                data: ['周二', '周三', '周四'],
+                //data: ['周二', '周三', '周四'],
+                data:this.state.rytjRaData,
+                axisTick:{alignWithLabel:true},
                 axisLine:{
                     lineStyle:{
                         color:'#fff',
@@ -134,8 +190,9 @@ export default class RytjPanel extends React.Component{
                     }
                 },
                 axisLabel: {
+                    interval:0,
                     textStyle: {
-                        color: '#fff'
+                        color: '#fff',
                     },
                 },
                 z: 10
@@ -145,9 +202,10 @@ export default class RytjPanel extends React.Component{
             series: [{
                 type: 'bar',
                 barWidth:'5',
-                data: [{value:2,itemStyle:{ normal:{color:'#49B637'}}}, {value:3,itemStyle:{ normal:{color:'#06AAE4'}}}, {value:4,itemStyle:{ normal:{color:'#027BDB'}}}],
+                //data: [{value:2,itemStyle:{ normal:{color:'#49B637'}}}, {value:3,itemStyle:{ normal:{color:'#06AAE4'}}}, {value:4,itemStyle:{ normal:{color:'#027BDB'}}}],
+                data:this.state.rytjSeriesData,
                 coordinateSystem: 'polar',
-                name: 'A',
+                name: this.state.实时人数字段+":"+this.state.ssrsCount,
                 itemStyle:{normal:{color:'#59F0F6'}},
                 stack: 'a'
             }],
@@ -156,7 +214,7 @@ export default class RytjPanel extends React.Component{
                 textStyle: {
                     color: '#F39D2E'
                 },
-                data: ['A']
+                data: [this.state.实时人数字段+":"+this.state.ssrsCount]
             }
         };
         return option;
