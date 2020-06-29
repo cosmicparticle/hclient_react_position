@@ -5,6 +5,7 @@ import closeButImg from '../../image/002.png';
 import Super from "../../super";
 import $ from 'jquery';
 import RytjEcharts from 'echarts-for-react';
+import BjjcEcharts from 'echarts-for-react';
 
 export default class RytjPanel extends React.Component{
     state={rytjMenuId:101421313564705,rytjQueryKey:"",
@@ -219,6 +220,61 @@ export default class RytjPanel extends React.Component{
         };
         return option;
     }
+    getBjjcOptions(){
+        let option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 10,
+                data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+            },
+            color:['#D06052','#E29F39','#4C9BC7','#0f0','#00f'],
+            graphic:{
+                type:"text",
+                left:"center",
+                top:"center",
+                style:{
+                    text:"异常报警:6",
+                    textAlign:"center",
+                    fill:"#fff",
+                    fontSize:20
+                }
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '30',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data: [
+                        {value: 335, name: '直接访问'},
+                        {value: 310, name: '邮件营销'},
+                        {value: 234, name: '联盟广告'},
+                        {value: 135, name: '视频广告'},
+                        {value: 1548, name: '搜索引擎'}
+                    ]
+                }
+            ]
+        };
+        return option;
+    }
     resetRytjPosition=()=>{
         let nlh=$(".nav-left").css("height");
         nlh=nlh.substring(0,nlh.length-2);
@@ -267,6 +323,8 @@ export default class RytjPanel extends React.Component{
             <div className="main_div" id="main_div">
                 <div className="rytj_title_div">人员统计</div>
                 <RytjEcharts option={this.getRytjOptions()}/>
+                <div className="bjjc_title_div">报警监测</div>
+                <BjjcEcharts option={this.getBjjcOptions()}/>
                 <div className="qytj_title_div">区域统计</div>
                 <div className="qytj_list_div">
                     <div className="title_div">
