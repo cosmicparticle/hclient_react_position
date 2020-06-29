@@ -11,6 +11,11 @@ export default class RytjPanel extends React.Component{
     state={rytjMenuId:101421313564705,rytjQueryKey:"",
         rytjColumnsId:{},
         rytjColumnsFieldId:{},
+        bjjcMenuId:24,bjjcQueryKey:"",bjjcStartDate:"",bjjcEndDate:"",
+        bjjcColumnsId:{},
+        bjjcColumnsFieldId:{},
+        bjjcLegendData:[],
+        bjjcSeriesData:[],
         qytjMenuId:17,qytjQueryKey:"",qytjStartDate:"",qytjEndDate:"",qytjEntities:[],
         qytjColumnsId:{},
         qytjColumnsFieldId:{},
@@ -30,6 +35,7 @@ export default class RytjPanel extends React.Component{
     }
     request=()=>{
         this.initRytjLtmplAttr();
+        this.initBjjcLtmplAttr();
         this.initQytjLtmplAttr();
     }
     initRytjLtmplAttr=()=>{
@@ -43,6 +49,17 @@ export default class RytjPanel extends React.Component{
             this.initRytjListByMenuId();
         });
     }
+    initBjjcLtmplAttr=()=>{
+        Super.super({
+            url:`api2/entity/${this.state.bjjcMenuId}/list/tmpl`,
+            method:'GET',
+        }).then((res) => {
+            console.log("bjjcRes==="+JSON.stringify(res))
+            let resColumns=res.ltmpl.columns;
+            this.initBjjcColumnsId(resColumns);
+            this.initBjjcLegendData(this.state.bjjcColumnsFieldId[this.state.报警类型字段]);
+        });
+    }
     initQytjLtmplAttr=()=>{
         Super.super({
             url:`api2/entity/${this.state.qytjMenuId}/list/tmpl`,
@@ -52,6 +69,25 @@ export default class RytjPanel extends React.Component{
             let resColumns=res.ltmpl.columns;
             this.initQytjColumnsId(resColumns);
             this.initQytjListByMenuId();
+        });
+    }
+    initBjjcLegendData=(fieldId)=>{
+        Super.super({
+            url:`api2/meta/dict/field_options`,
+            method:'GET',
+            query: {fieldIds:fieldId}
+        }).then((res) => {
+            console.log("BjjcLegendData==="+JSON.stringify(res))
+            let bjjcLegendData=[];
+            let bjjcSeriesData=[];
+            res.optionsMap[fieldId].map((item,index)=>{
+                bjjcLegendData.push(item.title);
+                bjjcSeriesData.push({"value":0,"name":item.title});
+            });
+            this.state.bjjcLegendData=bjjcLegendData;
+            this.state.bjjcSeriesData=bjjcSeriesData;
+
+            this.initBjjcListByMenuId();
         });
     }
     initRytjColumnsId=(resColumns)=>{
@@ -65,6 +101,18 @@ export default class RytjPanel extends React.Component{
         //console.log(bjtjColumnsId)
         this.setState({rytjColumnsId: rytjColumnsId});
         this.setState({rytjColumnsFieldId: rytjColumnsFieldId});
+    }
+    initBjjcColumnsId=(resColumns)=>{
+        let bjjcColumnsId = {};
+        let bjjcColumnsFieldId = {};
+        resColumns.map((item, index) => {
+            //console.log(item.title+",==="+item.id)
+            bjjcColumnsId[item.title] = item.id;
+            bjjcColumnsFieldId[item.title] = item.fieldId;
+        });
+        //console.log(bjtjColumnsId)
+        this.setState({bjjcColumnsId: bjjcColumnsId});
+        this.setState({bjjcColumnsFieldId: bjjcColumnsFieldId});
     }
     initQytjColumnsId=(resColumns)=>{
         let qytjColumnsId = {};
@@ -87,6 +135,20 @@ export default class RytjPanel extends React.Component{
             console.log("rytjTmpl==="+JSON.stringify(res));
             this.state.rytjQueryKey=res.queryKey;
             this.initRytjListByQueryKey();
+        })
+    }
+    initBjjcListByMenuId=()=>{
+        //this.state.bjjcStartDate=this.getAddDate(-140);
+        //this.state.bjjcEndDate=this.getTodayDate();
+        Super.super({
+            url:`api2/entity/${this.state.bjjcMenuId}/list/tmpl`,
+            method:'GET'
+            //query:{criteria_13:this.state.bjjcStartDate+"~"+this.state.bjjcEndDate}
+        }).then((res) => {
+            //console.log(res);
+            console.log("bjjcTmpl==="+JSON.stringify(res));
+            this.state.bjjcQueryKey=res.queryKey;
+            this.initBjjcListByQueryKey();
         })
     }
     initQytjListByMenuId=()=>{
@@ -140,6 +202,28 @@ export default class RytjPanel extends React.Component{
             this.state.ssrsCount=ssrsCount;
             this.state.rytjRaData=rytjRaData;
             this.state.rytjSeriesData=rytjSeriesData;
+        })
+    }
+    initBjjcListByQueryKey=()=>{
+        Super.super({
+            url:`api2/entity/list/${this.state.bjjcQueryKey}/data`,
+            method:'GET',
+            query:{pageSize:this.state.pageSize}
+        }).then((res) => {
+            console.log("data==="+JSON.stringify(res));
+            let bjjcEntities=res.entities;
+            let bjjcSeriesData=this.state.bjjcSeriesData;
+            bjjcEntities.map((enItem,enIndex)=>{
+                let cellMap=enItem.cellMap;
+                bjjcSeriesData.map((sdItem,sdIndex)=>{
+                    if(cellMap[this.state.bjjcColumnsId[this.state.报警类型字段]]==sdItem.name){
+                        sdItem.value+=parseInt(cellMap[this.state.bjjcColumnsId[this.state.数量字段]]);
+                    }
+                })
+            })
+            this.state.bjjcSeriesData=bjjcSeriesData;
+            //this.setState({bjjcSeriesData:bjjcSeriesData})
+            console.log("bjjcSeriesData==="+JSON.stringify(this.state.bjjcSeriesData))
         })
     }
     initQytjListByQueryKey=()=>{
@@ -229,7 +313,8 @@ export default class RytjPanel extends React.Component{
             legend: {
                 orient: 'vertical',
                 left: 10,
-                data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+                //data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+                data:this.state.bjjcLegendData
             },
             color:['#D06052','#E29F39','#4C9BC7','#0f0','#00f'],
             graphic:{
@@ -263,6 +348,7 @@ export default class RytjPanel extends React.Component{
                     labelLine: {
                         show: false
                     },
+                    /*
                     data: [
                         {value: 335, name: '直接访问'},
                         {value: 310, name: '邮件营销'},
@@ -270,6 +356,8 @@ export default class RytjPanel extends React.Component{
                         {value: 135, name: '视频广告'},
                         {value: 1548, name: '搜索引擎'}
                     ]
+                    */
+                    data:this.state.bjjcSeriesData
                 }
             ]
         };
