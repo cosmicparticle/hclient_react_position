@@ -7,7 +7,10 @@ import $ from 'jquery';
 import RytjEcharts from 'echarts-for-react';
 
 export default class RytjPanel extends React.Component{
-    state={menuId:17,qytjQueryKey:"",qytjStartDate:"",qytjEndDate:"",qytjEntities:[],
+    state={rytjMenuId:101421313564705,
+        rytjColumnsId:{},
+        rytjColumnsFieldId:{},
+        qytjMenuId:17,qytjQueryKey:"",qytjStartDate:"",qytjEndDate:"",qytjEntities:[],
         qytjColumnsId:{},
         qytjColumnsFieldId:{},
         报警围栏字段:"报警围栏",
@@ -20,18 +23,41 @@ export default class RytjPanel extends React.Component{
         this.request();
     }
     request=()=>{
-        this.initLtmplAttr();
+        this.initRytjLtmplAttr();
+        this.initQytjLtmplAttr();
     }
-    initLtmplAttr=()=>{
+    initRytjLtmplAttr=()=>{
         Super.super({
-            url:`api2/entity/${this.state.menuId}/list/tmpl`,
+            url:`api2/entity/${this.state.rytjMenuId}/list/tmpl`,
             method:'GET',
         }).then((res) => {
-            console.log("==="+JSON.stringify(res))
+            console.log("rytjRes==="+JSON.stringify(res))
+            let resColumns=res.ltmpl.columns;
+            this.initRytjColumnsId(resColumns);
+        });
+    }
+    initQytjLtmplAttr=()=>{
+        Super.super({
+            url:`api2/entity/${this.state.qytjMenuId}/list/tmpl`,
+            method:'GET',
+        }).then((res) => {
+            console.log("qytjRes==="+JSON.stringify(res))
             let resColumns=res.ltmpl.columns;
             this.initQytjColumnsId(resColumns);
             this.initQytjListByMenuId();
         });
+    }
+    initRytjColumnsId=(resColumns)=>{
+        let rytjColumnsId = {};
+        let rytjColumnsFieldId = {};
+        resColumns.map((item, index) => {
+            //console.log(item.title+",==="+item.id)
+            rytjColumnsId[item.title] = item.id;
+            rytjColumnsFieldId[item.title] = item.fieldId;
+        });
+        //console.log(bjtjColumnsId)
+        this.setState({rytjColumnsId: rytjColumnsId});
+        this.setState({rytjColumnsFieldId: rytjColumnsFieldId});
     }
     initQytjColumnsId=(resColumns)=>{
         let qytjColumnsId = {};
@@ -51,7 +77,7 @@ export default class RytjPanel extends React.Component{
         this.state.qytjStartDate=this.getAddDate(days);
         this.state.qytjEndDate=this.getTodayDate();
         Super.super({
-            url:`api2/entity/${this.state.menuId}/list/tmpl`,
+            url:`api2/entity/${this.state.qytjMenuId}/list/tmpl`,
             method:'GET',
             query:{disabledColIds:disabledColIds,sortColIds:(this.state.qytjColumnsId[this.state.日期字段]+"_DESC"),criteria_13:this.state.qytjStartDate+"~"+this.state.qytjEndDate}
         }).then((res) => {
@@ -94,39 +120,43 @@ export default class RytjPanel extends React.Component{
         else
             return ""
     }
-    getOptions(){
+    getRytjOptions(){
         let option = {
             angleAxis: {
             },
             radiusAxis: {
                 type: 'category',
-                data: ['周一', '周二', '周三', '周四'],
+                data: ['周二', '周三', '周四'],
+                axisLine:{
+                    lineStyle:{
+                        color:'#fff',
+                        width:0
+                    }
+                },
+                axisLabel: {
+                    textStyle: {
+                        color: '#fff'
+                    },
+                },
                 z: 10
             },
             polar: {
             },
             series: [{
                 type: 'bar',
-                data: [1, 2, 3, 4],
+                barWidth:'5',
+                data: [{value:2,itemStyle:{ normal:{color:'#49B637'}}}, {value:3,itemStyle:{ normal:{color:'#06AAE4'}}}, {value:4,itemStyle:{ normal:{color:'#027BDB'}}}],
                 coordinateSystem: 'polar',
                 name: 'A',
-                stack: 'a'
-            }, {
-                type: 'bar',
-                data: [2, 4, 6, 8],
-                coordinateSystem: 'polar',
-                name: 'B',
-                stack: 'a'
-            }, {
-                type: 'bar',
-                data: [1, 2, 3, 4],
-                coordinateSystem: 'polar',
-                name: 'C',
+                itemStyle:{normal:{color:'#59F0F6'}},
                 stack: 'a'
             }],
             legend: {
                 show: true,
-                data: ['A', 'B', 'C']
+                textStyle: {
+                    color: '#F39D2E'
+                },
+                data: ['A']
             }
         };
         return option;
@@ -178,7 +208,7 @@ export default class RytjPanel extends React.Component{
             <img className="openBut_img" id="openBut_img" src={openButImg} onClick={(e)=>this.openRytjPanelDiv(true)}/>
             <div className="main_div" id="main_div">
                 <div className="rytj_title_div">人员统计</div>
-                <RytjEcharts option={this.getOptions()}/>
+                <RytjEcharts option={this.getRytjOptions()}/>
                 <div className="qytj_title_div">区域统计</div>
                 <div className="qytj_list_div">
                     <div className="title_div">
