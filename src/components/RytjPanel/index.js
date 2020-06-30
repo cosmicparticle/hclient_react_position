@@ -8,17 +8,31 @@ import RytjEcharts from 'echarts-for-react';
 import BjjcEcharts from 'echarts-for-react';
 
 export default class RytjPanel extends React.Component{
-    state={rytjMenuId:101421313564705,rytjQueryKey:"",
+    state={
+        rytjMenuId:101421313564705,
+        rytjQueryKey:"",
         rytjColumnsId:{},
         rytjColumnsFieldId:{},
-        bjjcMenuId:24,bjjcQueryKey:"",bjjcStartDate:"",bjjcEndDate:"",
+        ssrsInfo:"",
+        //rytjRaData:[],
+        rytjDataList:[],
+        rytjLegendData:[],
+        rytjSeriesData:[],
+        bjjcMenuId:24,
+        bjjcQueryKey:"",
+        bjjcStartDate:"",
+        bjjcEndDate:"",
         bjjcColumnsId:{},
         bjjcColumnsFieldId:{},
+        bjjcInfo:"",
         bjjcDataList:[],
         bjjcLegendData:[],
         bjjcSeriesData:[],
-        bjjcInfo:"",
-        qytjMenuId:17,qytjQueryKey:"",qytjStartDate:"",qytjEndDate:"",qytjEntities:[],
+        qytjMenuId:17,
+        qytjQueryKey:"",
+        qytjStartDate:"",
+        qytjEndDate:"",
+        qytjEntities:[],
         qytjColumnsId:{},
         qytjColumnsFieldId:{},
         报警围栏字段:"报警围栏",
@@ -26,10 +40,8 @@ export default class RytjPanel extends React.Component{
         日期字段:"日期",
         数量字段:"数量",
         人员分类字段:"人员分类",
-        实时人数字段:"实时人数",
-        ssrsCount:0,
-        rytjRaData:[],
-        rytjSeriesData:[]}
+        实时人数字段:"实时人数"
+    }
 
     componentDidMount(){
         setTimeout(this.resetRytjPosition,"2000");
@@ -48,7 +60,7 @@ export default class RytjPanel extends React.Component{
             console.log("rytjRes==="+JSON.stringify(res))
             let resColumns=res.ltmpl.columns;
             this.initRytjColumnsId(resColumns);
-            this.initRytjListByMenuId();
+            this.initRytjLegendData(this.state.rytjColumnsFieldId[this.state.人员分类字段]);
         });
     }
     initBjjcLtmplAttr=()=>{
@@ -71,6 +83,25 @@ export default class RytjPanel extends React.Component{
             let resColumns=res.ltmpl.columns;
             this.initQytjColumnsId(resColumns);
             this.initQytjListByMenuId();
+        });
+    }
+    initRytjLegendData=(fieldId)=>{
+        Super.super({
+            url:`api2/meta/dict/field_options`,
+            method:'GET',
+            query: {fieldIds:fieldId}
+        }).then((res) => {
+            console.log("RytjLegendData==="+JSON.stringify(res))
+            let rytjLegendData=[];
+            let rytjDataList=[];
+            res.optionsMap[fieldId].map((item,index)=>{
+                rytjLegendData.push(item.title);
+                rytjDataList.push({value:0,name:item.title});
+            });
+            this.state.rytjLegendData=rytjLegendData;
+            this.state.rytjDataList=rytjDataList;
+
+            this.initRytjListByMenuId();
         });
     }
     initBjjcLegendData=(fieldId)=>{
@@ -169,6 +200,7 @@ export default class RytjPanel extends React.Component{
             this.initQytjListByQueryKey();
         })
     }
+    /*
     initRytjListByQueryKey=()=>{
         Super.super({
             url:`api2/entity/list/${this.state.rytjQueryKey}/data`,
@@ -204,6 +236,32 @@ export default class RytjPanel extends React.Component{
             this.state.ssrsCount=ssrsCount;
             this.state.rytjRaData=rytjRaData;
             this.state.rytjSeriesData=rytjSeriesData;
+        })
+    }
+     */
+    initRytjListByQueryKey=()=>{
+        Super.super({
+            url:`api2/entity/list/${this.state.rytjQueryKey}/data`,
+            method:'GET',
+            query:{pageSize:this.state.pageSize}
+        }).then((res) => {
+            console.log("rytjData==="+JSON.stringify(res));
+            let ssrsCount=0;
+            let rytjEntities=res.entities;
+            let rytjDataList=this.state.rytjDataList;
+            rytjEntities.map((enItem,enIndex)=>{
+                let cellMap=enItem.cellMap;
+                rytjDataList.map((sdItem,sdIndex)=>{
+                    if(cellMap[this.state.rytjColumnsId[this.state.人员分类字段]]==sdItem.name){
+                        let 数量=parseInt(cellMap[this.state.rytjColumnsId[this.state.数量字段]]);
+                        sdItem.value+=数量;
+                        ssrsCount+=数量;
+                    }
+                })
+            })
+
+            this.state.ssrsInfo="实时人数:"+ssrsCount;
+            this.setState({rytjSeriesData:rytjDataList});
         })
     }
     initBjjcListByQueryKey=()=>{
@@ -271,6 +329,7 @@ export default class RytjPanel extends React.Component{
         else
             return ""
     }
+    /*
     getRytjOptions(){
         let option = {
             angleAxis: {
@@ -316,6 +375,60 @@ export default class RytjPanel extends React.Component{
         };
         return option;
     }
+     */
+    getRytjOptions(){
+        let option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b}: {c} ({d}%)'
+            },
+            legend: {
+                //orient: 'vertical',
+                left: 'center',
+                textStyle:{
+                    color: '#fff'//字体颜色
+                },
+                //data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
+                data:this.state.rytjLegendData
+            },
+            color:['#49B637','#06AAE4','#027BDB'],
+            graphic:{
+                type:"text",
+                left:"center",
+                top:"center",
+                style:{
+                    text:this.state.ssrsInfo,
+                    textAlign:"center",
+                    fill:"#fff",
+                    fontSize:15
+                }
+            },
+            series: [
+                {
+                    name: '人员分类',
+                    type: 'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        show: false,
+                        position: 'center'
+                    },
+                    emphasis: {
+                        label: {
+                            show: true,
+                            fontSize: '30',
+                            fontWeight: 'bold'
+                        }
+                    },
+                    labelLine: {
+                        show: false
+                    },
+                    data:this.state.rytjSeriesData
+                }
+            ]
+        };
+        return option;
+    }
     getBjjcOptions(){
         let option = {
             tooltip: {
@@ -323,8 +436,11 @@ export default class RytjPanel extends React.Component{
                 formatter: '{a} <br/>{b}: {c} ({d}%)'
             },
             legend: {
-                orient: 'vertical',
-                left: 10,
+                //orient: 'vertical',
+                left: 'center',
+                textStyle:{
+                    color: '#fff'//字体颜色
+                },
                 //data: ['直接访问', '邮件营销', '联盟广告', '视频广告', '搜索引擎']
                 data:this.state.bjjcLegendData
             },
@@ -342,7 +458,7 @@ export default class RytjPanel extends React.Component{
             },
             series: [
                 {
-                    name: '访问来源',
+                    name: '报警类型',
                     type: 'pie',
                     radius: ['50%', '70%'],
                     avoidLabelOverlap: false,
