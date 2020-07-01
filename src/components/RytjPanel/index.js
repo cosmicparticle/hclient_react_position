@@ -1,5 +1,5 @@
 import React from "react";
-import './index1.css';
+import './index.css';
 import openButImg from '../../image/001.png';
 import closeButImg from '../../image/002.png';
 import Super from "../../super";
