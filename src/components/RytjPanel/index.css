@@ -3,7 +3,14 @@
     position: fixed;
     z-index: 1;
 }
-.rytjPanel_div .openBut_img,.rytjPanel_div .closeBut_img{
+.rytjPanel_div .openBut_img{
+    width: 15px;
+    height: 80px;
+    margin-left: -300px;
+    position: absolute;
+    cursor:pointer;
+}
+.rytjPanel_div .closeBut_img{
     width: 15px;
     height: 80px;
     position: absolute;
@@ -25,6 +32,9 @@
     font-weight: bold;
     border-left: #0270E6 solid 5px;
     background-color: #1A3452;
+}
+.rytjPanel_div .main_div .rytj_echarts,.rytjPanel_div .main_div .bjjc_echarts{
+    background-color: rgba(79,86,97,0.7);
 }
 .rytjPanel_div .main_div .qytj_list_div{
     width:100%;

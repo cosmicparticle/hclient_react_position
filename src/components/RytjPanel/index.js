@@ -45,7 +45,11 @@ export default class RytjPanel extends React.Component{
 
     componentDidMount(){
         setTimeout(this.resetRytjPosition,"2000");
+        window.addEventListener('resize', this.resetRytjPosition);
         this.request();
+    }
+    componentWillUnmount(){
+        window.removeEventListener('resize',this.resetRytjPosition);
     }
     request=()=>{
         this.initRytjLtmplAttr();
@@ -511,8 +515,8 @@ export default class RytjPanel extends React.Component{
         let rpdh=$("#rytjPanel_div").css("height");
         rpdh=rpdh.substring(0,rpdh.length-2);
 
-        $("#openBut_img").css("display","block")
         $("#openBut_img").css("margin-top",(rpdh-obiw)/2);
+        $("#openBut_img").css("margin-left","0px");
         $("#closeBut_img").css("margin-top",-(rpdh-obiw)/2-80);
         $("#closeBut_img").css("margin-left","460px");
 
@@ -538,9 +542,9 @@ export default class RytjPanel extends React.Component{
             <img className="openBut_img" id="openBut_img" src={openButImg} onClick={(e)=>this.openRytjPanelDiv(true)}/>
             <div className="main_div" id="main_div">
                 <div className="rytj_title_div">人员统计</div>
-                <RytjEcharts option={this.getRytjOptions()}/>
+                <RytjEcharts className="rytj_echarts" option={this.getRytjOptions()}/>
                 <div className="bjjc_title_div">报警监测</div>
-                <BjjcEcharts option={this.getBjjcOptions()}/>
+                <BjjcEcharts className="bjjc_echarts" option={this.getBjjcOptions()}/>
                 <div className="qytj_title_div">区域统计</div>
                 <div className="qytj_list_div">
                     <div className="title_div">
