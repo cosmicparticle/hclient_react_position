@@ -5,6 +5,7 @@ import { NavLink,withRouter } from 'react-router-dom'
 import './index.css'
 import RytjPanel from '../../components/RytjPanel'
 import Units from '../../units'
+import dingWeiImg from './../../image/003.jpg'
 const SubMenu = Menu.SubMenu;
 
 
@@ -75,7 +76,7 @@ class NavLeft extends React.Component{
 	renderMenu=(data)=>{
 		return data.map((item)=>{
 			if(item.l2Menus){
-				return <SubMenu title={item.title} key={item.id}>
+				return <SubMenu title={<span><img src={dingWeiImg} style={{width:'30px',height:'30px'}}/>{item.title}</span>} key={item.id}>
 							{ this.renderMenu(item.l2Menus) }
 						</SubMenu>				
 			}

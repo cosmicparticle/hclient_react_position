@@ -175,7 +175,7 @@ export default class RytjPanel extends React.Component{
         })
     }
     initBjjcListByMenuId=()=>{
-        this.state.bjjcStartDate=this.getAddDate(-140);
+        this.state.bjjcStartDate=this.getAddDate(-7);
         this.state.bjjcEndDate=this.getTodayDate();
         Super.super({
             url:`api2/entity/${this.state.bjjcMenuId}/list/tmpl`,
