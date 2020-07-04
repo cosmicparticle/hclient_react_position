@@ -5,7 +5,6 @@ import Units from './../../units'
 import Super from "./../../super"
 import "./index.css"
 import defaultImg from './../../image/003.jpg'
-import admin from './../../pages/admin'
 const { SubMenu } = Menu
 
 class Header extends React.Component{
