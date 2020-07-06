@@ -9,7 +9,7 @@ const { SubMenu } = Menu
 
 class Header extends React.Component{
 	state={
-		bkEntities:[],bkColumnsId:[],bkMenuId:"102281919733819",bkQueryKey:"",pageSize:"100",
+		bkEntities:[],bkColumnsId:[],bkMenuId:"102281919733819",bkQueryKey:"",pageSize:"100",hydUrl:"http://116.62.163.143:85/hydrocarbon/",
 		板块id字段:"板块id",
 		板块名称字段:"板块名称",
 		图标字段:"图标"
@@ -92,14 +92,32 @@ class Header extends React.Component{
 		})
 	}
 	renderBlockMenu=(data)=>{
+		let bkEntities=this.state.bkEntities;
+		let bkColumnsId=this.state.bkColumnsId;
+		let 板块id字段=this.state.板块id字段;
+		let 板块名称字段=this.state.板块名称字段;
+		let 图标字段=this.state.图标字段;
 		return data.map((item)=>{
+			let defImgHtml=<img src={defaultImg} style={{width:'30px',height:'30px'}}/>;
+			let navImg="";
+			let imgFlag=false;
+			{
+				navImg=bkEntities.map((bkItem,bkIndex)=>{
+					let bkCellMap=bkItem.cellMap;
+					if(bkCellMap[bkColumnsId[板块id字段]]==item.id&bkCellMap[bkColumnsId[板块名称字段]]==item.title){
+						imgFlag=true;
+						return <img src={this.state.hydUrl+bkCellMap[bkColumnsId[图标字段]]} style={{width:'30px',height:'30px'}}/>
+					}
+				})
+			}
+
 			if(item.l2Menus){
-				return <SubMenu title={item.title} key={item.id}>
+				return <SubMenu title={<span>{imgFlag?navImg:defImgHtml}{item.title}</span>} key={item.id}>
 							{ this.renderBlockMenu(item.l2Menus) }
 						</SubMenu>				
 			}
 			return  <Menu.Item key={item.id} >
-						<NavLink to={`/${item.id}?blockId=${item.blockId}`} target="_blank">{item.title}</NavLink>
+						<NavLink to={`/${item.id}?blockId=${item.blockId}`} target="_blank">{imgFlag?navImg:defImgHtml}{item.title}</NavLink>
 					</Menu.Item>
 		})		
 	}
@@ -163,7 +181,7 @@ class Header extends React.Component{
 														if(bkCellMap[bkColumnsId[板块id字段]]==item.id&bkCellMap[bkColumnsId[板块名称字段]]==item.title){
 															console.log("bk==="+bkCellMap[bkColumnsId[图标字段]])
 															imgFlag=true;
-															return <img src={'http://116.62.163.143:85/hydrocarbon/'+bkCellMap[bkColumnsId[图标字段]]} style={{width:'30px',height:'30px'}}/>
+															return <img src={this.state.hydUrl+bkCellMap[bkColumnsId[图标字段]]} style={{width:'30px',height:'30px'}}/>
 														}
 													})
 												}

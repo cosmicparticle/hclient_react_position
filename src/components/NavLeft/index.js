@@ -18,7 +18,7 @@ class NavLeft extends React.Component{
 		selectedKeys:[],
 		openKeys:[],
 		collapsed: false,
-		bkEntities:[],bkColumnsId:[],bkMenuId:"102281919733819",bkQueryKey:"",pageSize:"100",
+		bkEntities:[],bkColumnsId:[],bkMenuId:"102281919733819",bkQueryKey:"",pageSize:"100",hydUrl:"http://116.62.163.143:85/hydrocarbon/",
 		板块id字段:"板块id",
 		板块名称字段:"板块名称",
 		图标字段:"图标",
@@ -130,7 +130,7 @@ class NavLeft extends React.Component{
 					let bkCellMap=bkItem.cellMap;
 					if(bkCellMap[bkColumnsId[板块id字段]]==item.id&bkCellMap[bkColumnsId[板块名称字段]]==item.title){
 						imgFlag=true;
-						return <img src={'http://116.62.163.143:85/hydrocarbon/'+bkCellMap[bkColumnsId[图标字段]]} style={{width:'30px',height:'30px'}}/>
+						return <img src={this.state.hydUrl+bkCellMap[bkColumnsId[图标字段]]} style={{width:'30px',height:'30px'}}/>
 					}
 				})
 			}
