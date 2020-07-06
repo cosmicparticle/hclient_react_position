@@ -4,7 +4,7 @@ import { withRouter,NavLink } from 'react-router-dom'
 import Units from './../../units'
 import Super from "./../../super"
 import "./index.css"
-import defaultImg from './../../image/003.jpg'
+import defaultImg from './../../image/003.png'
 const { SubMenu } = Menu
 
 class Header extends React.Component{

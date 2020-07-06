@@ -5,7 +5,7 @@ import { NavLink,withRouter } from 'react-router-dom'
 import './index.css'
 import RytjPanel from '../../components/RytjPanel'
 import Units from '../../units'
-import defaultImg from './../../image/003.jpg'
+import defaultImg from './../../image/004.jpg'
 import Super from "../../super";
 const SubMenu = Menu.SubMenu;
 
