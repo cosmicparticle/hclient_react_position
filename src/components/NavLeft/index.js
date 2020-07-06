@@ -5,9 +5,8 @@ import { NavLink,withRouter } from 'react-router-dom'
 import './index.css'
 import RytjPanel from '../../components/RytjPanel'
 import Units from '../../units'
-import dingWeiImg from './../../image/003.jpg'
+import defaultImg from './../../image/003.jpg'
 import Super from "../../super";
-import $ from 'jquery';
 const SubMenu = Menu.SubMenu;
 
 
@@ -21,6 +20,7 @@ class NavLeft extends React.Component{
 		collapsed: false,
 		bkEntities:[],bkColumnsId:[],bkMenuId:"102281919733819",bkQueryKey:"",pageSize:"100",
 		板块id字段:"板块id",
+		板块名称字段:"板块名称",
 		图标字段:"图标",
 		mtnAttr:{l1Menus:"",menuId:"",key:"",open:""}
 	}
@@ -119,29 +119,29 @@ class NavLeft extends React.Component{
 		let bkEntities=this.state.bkEntities;
 		let bkColumnsId=this.state.bkColumnsId;
 		let 板块id字段=this.state.板块id字段;
+		let 板块名称字段=this.state.板块名称字段;
 		let 图标字段=this.state.图标字段;
 		return data.map((item)=>{
-			if(item.l2Menus){
-				let imgFlag=false;
-				return <SubMenu title={
-					<span>
-					{
-						bkEntities.map((bkItem,bkIndex)=>{
-							let bkCellMap=bkItem.cellMap;
-							if(bkCellMap[bkColumnsId[板块id字段]]==item.id){
-								imgFlag=true;
-								return <img src={'http://116.62.163.143:85/hydrocarbon/'+bkCellMap[bkColumnsId[图标字段]]} style={{width:'30px',height:'30px'}}/>
-							}
-						})
+			let defImgHtml=<img src={defaultImg} style={{width:'30px',height:'30px'}}/>;
+			let navImg="";
+			let imgFlag=false;
+			{
+				navImg=bkEntities.map((bkItem,bkIndex)=>{
+					let bkCellMap=bkItem.cellMap;
+					if(bkCellMap[bkColumnsId[板块id字段]]==item.id&bkCellMap[bkColumnsId[板块名称字段]]==item.title){
+						imgFlag=true;
+						return <img src={'http://116.62.163.143:85/hydrocarbon/'+bkCellMap[bkColumnsId[图标字段]]} style={{width:'30px',height:'30px'}}/>
 					}
-					{imgFlag?"":<img src={dingWeiImg} style={{width:'30px',height:'30px'}}/>}{item.title}{item.id}
-					</span>
-				} key={item.id}>
+				})
+			}
+
+			if(item.l2Menus){
+				return <SubMenu title={<span>{imgFlag?navImg:defImgHtml}{item.title}</span>} key={item.id}>
 							{ this.renderMenu(item.l2Menus) }
 						</SubMenu>				
 			}
 			return  <Menu.Item key={item.id} >
-						<NavLink to={item.customPagePath? `/customPage/${item.id}/${item.customPagePath}`: `/${item.id}`}>{item.title}</NavLink>
+						<NavLink to={item.customPagePath? `/customPage/${item.id}/${item.customPagePath}`: `/${item.id}`}>{imgFlag?navImg:defImgHtml}{item.title}</NavLink>
 				    </Menu.Item>
 		})
 	}

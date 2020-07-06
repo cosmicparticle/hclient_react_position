@@ -11,6 +11,7 @@ class Header extends React.Component{
 	state={
 		bkEntities:[],bkColumnsId:[],bkMenuId:"102281919733819",bkQueryKey:"",pageSize:"100",
 		板块id字段:"板块id",
+		板块名称字段:"板块名称",
 		图标字段:"图标"
 	}
 	componentWillMount(){
@@ -129,7 +130,7 @@ class Header extends React.Component{
 		const style={
 			marginRight:"8px"
 		}
-		const {blocks,currentBlockId,bkColumnsId,bkEntities,板块id字段,图标字段}=this.state
+		const {blocks,currentBlockId,bkColumnsId,bkEntities,板块id字段,板块名称字段,图标字段}=this.state
 		const menu = (
 			<Menu>
 				<Menu.Item>
@@ -159,7 +160,7 @@ class Header extends React.Component{
 												{
 													bkEntities.map((bkItem,bkIndex)=>{
 														let bkCellMap=bkItem.cellMap;
-														if(bkCellMap[bkColumnsId[板块id字段]]==item.id){
+														if(bkCellMap[bkColumnsId[板块id字段]]==item.id&bkCellMap[bkColumnsId[板块名称字段]]==item.title){
 															console.log("bk==="+bkCellMap[bkColumnsId[图标字段]])
 															imgFlag=true;
 															return <img src={'http://116.62.163.143:85/hydrocarbon/'+bkCellMap[bkColumnsId[图标字段]]} style={{width:'30px',height:'30px'}}/>
