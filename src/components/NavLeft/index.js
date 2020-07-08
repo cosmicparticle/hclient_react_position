@@ -183,7 +183,8 @@ class NavLeft extends React.Component{
 					>
 					{menuTreeNode}
 				</Menu>
-				<RytjPanel/>
+				{Units.getLocalStorge("tokenName")==null?"":<RytjPanel/>}
+
 
 			</div>
 		)
