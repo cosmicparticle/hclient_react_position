@@ -1,2 +1,8 @@
-
 yarn-error.log
+node_modules/*
+yarn.lock
+build/*
+.idea/hclient_react_position.iml
+.idea/inspectionProfiles/Project_Default.xml
+.idea/modules.xml
+.idea/vcs.xml
