@@ -27,8 +27,8 @@ export default class Superagent{
                     if(options.data && options.data.isShowLoading!==false){
                         loading=document.getElementById('ajaxLoading')
                         loading.style.display="none"
-                    } 
-                    //console.log(res.body)
+                    }
+                    console.log("tokenName==="+tokenName)
                     if(res.status===200){
                         Units.setLocalStorge("tokenName",tokenName)
                         resolve(res.body)
