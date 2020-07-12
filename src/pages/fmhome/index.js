@@ -10,10 +10,6 @@ import { Select, Button, message, Slider,DatePicker, TimePicker } from 'antd';
 import locale from 'antd/lib/date-picker/locale/zh_CN';
 import TimeSlider from './TimeSlider'
 
-
-
-//数字计算
-// import np from "number-precision" 
 const Option = Select.Option;
 
 export default class Home extends React.Component{
@@ -21,7 +17,7 @@ export default class Home extends React.Component{
     constructor(props) {
         super(props);
         this.state={
-            // fmapID:'10347',
+            // fmapID:'90884',
             fmapID : '90884',// 工厂地图
             storeImageDatas:[],
             array:[],
@@ -171,86 +167,50 @@ export default class Home extends React.Component{
         console.log("componentWillUnmount...")
         // this.clearMaker()
         clearInterval(this.timer);
-        clearInterval(this.timer2);
-        clearInterval(this.timer3);
+
+        // this.clearMaker()
     }
 
     componentDidMount() {
         console.log("componentDidMount...")
          // 封装人员的数据
-         this.getLocationList("人员");
-        this.openMap();
+        //  this.getLocationList("人员");
+        // this.openMap();
 
-        this.state.map.on('loadComplete', ()=> {
-            console.log('地图加载完成！');
+        // this.state.map.on('loadComplete', ()=> {
+            // console.log('地图加载完成！');
             //显示按钮
-           // document.getElementById('tip').style.display = 'block';
-           this.timer = setInterval(function () {
+            // document.getElementById('fmbtnsGroup').style.display = 'block';
+        //    this.timer = setInterval(function () {
  //              debugger
-                if (this.state.showPeoPleImgBtn) {
+                // if (this.state.showPeoPleImgBtn) {
                     
-                    console.log("人员实时定位：！！" + this.state.showPeoPleImgBtn); 
-                    this.showLocationPhoto("人员");
-                }
+                //     console.log("人员实时定位：！！" + this.state.showPeoPleImgBtn); 
+                //     this.showLocationPhoto("人员");
+                // }
 
-                if (this.state.showCarImgBtn) {
+                // if (this.state.showCarImgBtn) {
                     
-                console.log("车辆实时定位：！！" + this.state.showCarImgBtn); 
-                this.showLocationPhoto("车辆");
-                }
+                // console.log("车辆实时定位：！！" + this.state.showCarImgBtn); 
+                // this.showLocationPhoto("车辆");
+                // }
 
-                if (this.state.showGoodsBtn) {
+            //     if (this.state.showGoodsBtn) {
                     
-                    console.log("物品实时定位：！！" + this.state.showGoodsBtn); 
-                    this.showLocationPhoto("物品");
-                }
+            //         console.log("物品实时定位：！！" + this.state.showGoodsBtn); 
+            //         this.showLocationPhoto("物品");
+            //     }
              
             
-                }.bind(this), 3000);
-            });
+            //     }.bind(this), 3000);
+            // });
 
 
-            this.timer2 = setInterval(function () {
-                // 人员追踪
-                if (this.state.isTrace) {
-                    
-                    console.log("人员追踪：！！" + this.state.isTrace); 
-                   
-                    let coodsTagListB =  this.state.coodsTagList;
-                    let traceCountA =  this.state.traceCount
-                    coodsTagListB.forEach(element => {
-                        let length = element.coordsTagListHistory.length;
-
-
-                        if (length > traceCountA) {
-                            let coordsTag =   element.coordsTagListHistory[traceCountA];
-                           
-                            this.addImageMarker(coordsTag);
-                        }
-
-                    });
-                    
-                    this.setState({
-                        traceCount:traceCountA+1
-                    })
-
-                }
-            }.bind(this), 100);
-
-            // 每100毫秒， 增加1秒， 10倍速度
-        this.timer3 = setInterval(function () {
-            if (this.state.isSingleTrack) { 
-               this.setState({
-                    curPlayCount: this.state.curPlayCount + 1000,
-                })
-            }
-        }.bind(this), 100);
-
-            const {menuId,type}=this.props.match?this.props.match.params:this.props
-            this.setState({
-                mmtType : type,
-                menuId,
-            })
+            // const {menuId,type}=this.props.match?this.props.match.params:this.props
+            // this.setState({
+            //     mmtType : type,
+            //     menuId,
+            // })
         
     }
     openMap=()=>{
@@ -1029,9 +989,10 @@ clearMaker=()=>{
         showGoodsBtn: false, 
         // clearMakerBtn : true,
     })
-
+debugger
     if (this.state.popMarkerList != null) {
         this.state.popMarkerList.forEach(popMarker => {
+            console.log("popMarker: " + popMarker);
             popMarker.close()
         });
     }
@@ -1576,23 +1537,23 @@ initFormList=()=>{
 
     } else {
 
-        const row =  <Row key={1}>
-                        <Col span={3}>
-                            <Button  className={this.state.addFenceMarker===true?'addFenceBtn active':'addFenceBtn'} onClick={this.addElectronicFence.bind(this)}>显示电子围栏</Button>
+        const row =  <Row  key={1}>
+                        <Col  span={2}>
+                            <Button  className={this.state.addFenceMarker===true?'addFenceBtn active':'addFenceBtn'} onClick={this.addElectronicFence.bind(this)}>电子围栏</Button>
                         </Col>
-                        <Col span={2}>
+                        <Col  span={2}>
                        <Button  className={this.state.showPeoPleImgBtn===true?'showPeoPleImgBtn active':'showPeoPleImgBtn'} onClick={this.controlLocationPhoto.bind(this, '人员')}>显示人员</Button>
                         </Col>
-                        <Col span={2}>
+                        <Col  span={2}>
                         <Button  className={this.state.showGoodsBtn===true?'addPeoPleImgBtn active':'addPeoPleImgBtn'} onClick={this.controlLocationPhoto.bind(this, '物品')}>显示物品</Button>
       
                         </Col>
                         <Col span={2}>
                             <Button  className={this.state.showCarImgBtn===true?'showCarImgBtn active':'showCarImgBtn'} onClick={this.controlLocationPhoto.bind(this, '车辆')}>显示车辆</Button>
                         </Col>
-                        <Col span={2}>
+                        {/* <Col span={2}>
                              <Button  className={this.state.clearMakerBtn===true?'clearMakerBtn active':'clearMakerBtn'} onClick={this.clearMaker.bind(this)}>清除所有</Button>
-                        </Col>
+                        </Col> */}
                     </Row>
 
         
@@ -1683,18 +1644,20 @@ getSelectList=()=>{
         const { Option } = Select;
         return (
             <div >
-                 <div style={this.getStyle()} id={'fengMap'}></div>
+                 {/* <div style={this.getStyle()} id={'fengMap'}></div> */}
                 {/* <span id="tip" className="tip">请尝试使用鼠标点击地图上模型，渲染选中模型颜色</span> */}
                
-                <div  id="fmbtnsGroup" className="fmbtnsGroup">
-                    {this.initFormList()}
-                <br/>
+                {/* <div  id="fmbtnsGroup" className="fmbtnsGroup">
+                    {this.initFormList()}              
+                <br/> */}
 
 
                     {/* <button className={this.state.moveImaBtn===true?'moveImaBtn active':'moveImaBtn'}  onClick={this.moveMarkerFunc.bind(this)}>移动人的位置</button> */}
                    
                     {/* <button className={this.state.removeBtn===true?'removeBtn active':'removeBtn'} onClick={this.deleteMarkerFunc.bind(this)}>删除所有标注</button> */}
-                </div>
+                {/* </div> */}
+
+                <video src="./实时定位.mp4" autoplay="autoplay"  loop="loop"></video>
             </div>
         );
     }

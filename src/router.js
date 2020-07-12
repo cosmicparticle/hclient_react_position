@@ -4,6 +4,8 @@ import App from './App'
 import Admin from './pages/admin'
 import Loginit from './pages/login'
 import Home from './pages/fmhome'
+import HisRoute from './pages/fmhome/historicalRoute'
+import PeopleTrace from './pages/fmhome/peopleTrace'
 import ActTable from "./pages/actTable"
 import Detail from "./pages/detail"
 import Import from "./pages/importData/importData"
@@ -23,7 +25,8 @@ export default class iRouter extends React.Component{
                             <Admin>
                                 <Switch>
                                     <Route path='/home' component={Home} exact/>
-                                    <Route path='/customPage/:menuId/fm/:type' component={Home} exact/>
+                                    <Route path='/customPage/:menuId/fm/2' component={PeopleTrace} exact/>
+                                    <Route path='/customPage/:menuId/fm/3' component={HisRoute} exact/>
                                     <Route path='/customPage/:menuId/:pageName(.+)' component={CustomPageRouter}/>
                                     <Route path="/:menuId" component={ActTable} exact />
                                     <Route path="/relation/:menuId/:ratmplId/:rootCode" component={ActTable} exact />
