@@ -1657,7 +1657,7 @@ getSelectList=()=>{
                     {/* <button className={this.state.removeBtn===true?'removeBtn active':'removeBtn'} onClick={this.deleteMarkerFunc.bind(this)}>删除所有标注</button> */}
                 {/* </div> */}
 
-                <video src="./实时定位3d.mp4" autoplay="autoplay"  loop="loop"></video>
+                <video src="./通用定位.mp4" autoplay="autoplay"  loop="loop"></video>
             </div>
         );
     }

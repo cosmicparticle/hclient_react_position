@@ -1354,7 +1354,7 @@ getSelectList=()=>{
                 <div  id="fmbtnsGroup" className="fmbtnsGroup">
                     {this.initFormList()}              
                  </div> */}
-                 <video src="./人员追踪.mp4" autoplay="autoplay"  loop="loop"></video>
+                 <video src="./通用定位.mp4" autoplay="autoplay"  loop="loop"></video>
             </div>
         );
     }
